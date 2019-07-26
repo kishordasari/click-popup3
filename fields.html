@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Popups</title>
+    <style>
+        *{
+            margin: 0px;
+            padding: 0px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            color: #666;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        #wrapper{
+            width: 800px;
+            margin: 50px auto 0px auto;
+            padding: 15px;
+            box-shadow: 1px 5px 5px #ccc;            
+        }
+        .clearfix::after{
+            clear: both;
+            display: inherit;
+            content: '';
+        }
+        h1{
+            font-weight: normal;
+            border-bottom: solid 1px #ccc;
+            padding-bottom: 15px;
+            margin-bottom: 40px;
+        }
+        .items{
+            width: 40%;
+            margin:3% 5%;
+            float: left;
+            padding: 10px 40px;
+            border: solid 1px #ccc;
+            cursor: pointer;
+            position: relative;
+        }
+        .items span{
+            font-size: 15px;
+        }
+        .items strong{
+            display: block;
+            font-size: 20px;
+            font-weight: normal;
+            padding:10px 0px;
+        }
+        .num{
+            border-radius: 50%;
+            width: 30px;
+            padding: 4px 0px;
+            border: solid 1px green;
+            text-align: center;
+            color:green;
+            position: absolute;
+            z-index: 10;
+            top: 40%;
+            right: 5%;
+        }
+        .btnArea{
+            width: 800px;
+            margin: 0px auto;      
+        }
+        .button{
+            border: solid 2px blue;
+            padding: 10px;
+        }
+        
+        .tooltip {
+            transform: translate(-50%, -200%);
+            display: none;
+            position: absolute;
+            color: #fff;
+            background-color:#000;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 8px;
+            z-index: 10;
+            display: block;
+            top: 0;
+            left: 50%;
+            text-align: center;
+            font-size: 12px;
+        }
+        .arrow_box {
+            position: absolute;
+            background: #ffffff;
+            border: 2px solid #36DC94;
+            border-radius: 10px;
+            top: 92%;
+            left: 64%;
+            z-index: 20;
+            cursor: initial;
+        }
+        .arrow_box:after, .arrow_box:before {
+            bottom: 99.70%;
+            left: 20%;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .arrow_box:after {
+            border-color: rgba(255, 255, 255, 0);
+            border-bottom-color: #ffffff;
+            border-width: 10px;
+            margin-left: -10px;
+        }
+        .arrow_box:before {
+            border-color: rgba(54, 220, 148, 0);
+            border-bottom-color: #36DC94;
+            border-width: 13px;
+            margin-left: -13px;
+        }
+        .arrow_box .content{
+            padding: 10px 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        .content textarea{
+            background: #F7F7F7;
+            font-size: 12px;
+            border: 0px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            width: 375px;
+            height: 50px;
+            outline: none;
+        }
+        .content button{
+            background: #36DC94;
+            color: #fff;
+            border:0px;
+            border-radius: 5px;
+            padding: 10px 50px;
+            outline: none;
+            margin-left: 10px;
+            float: right;
+        }
+        
+        .contlist span{
+            display: block;
+            position: relative;
+            padding: 5px 0px 5px 40px;
+            font-size: 12px;
+        }
+        .contlist span:last-child{
+            margin-bottom: 15px;
+        }
+        .contlist span::before{
+            content: url('logo.png');
+            display: inline-block;
+            position: absolute;
+            left: -55px;
+            top: -14px;
+            transform: scale(0.2);
+        }
+        .tab-content{
+			display: none;
+		}
+
+		.tab-content.current{
+			display: inherit;
+		}
+        #commentsBox{
+            position: fixed;
+            bottom: 50px;
+            right: 50px;
+            display: none;
+        }        
+        #commentsBox img{
+            position: absolute;
+            right: 0;
+            bottom: 0;
+        }
+        .commentList{
+            border: solid 2px #36DC94;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 80px;
+            display: none;
+        }
+        .commentList.active{
+            display: inherit;
+        }
+        .commentList .hd{
+            display: block;
+            font-size: 18px;
+            padding-bottom: 25px;
+        }
+        .commentList ul{
+            list-style-type: none;
+            counter-reset: my-sec-counter;
+        }
+        .commentList li{
+            display: block;
+            position: relative;
+            border-bottom: solid 1px #ccc;
+            padding: 0px 0px 15px 40px;
+            margin-bottom: 15px;
+        }
+        .commentList li::before {
+            counter-increment: my-sec-counter;
+            content: counter(my-sec-counter) " ";
+            border: solid 1px #36DC94;
+            border-radius: 100%;
+            color: #36DC94;
+            text-align: center;
+            position: absolute;
+            left: 0;
+            top: -2px;
+            width: 25px;
+            height: 25px;
+            line-height: 25px;
+        }
+        .commentList li:last-child{
+            border:none;
+            margin: 0px;
+            padding-bottom: 0px;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrapper" class="clearfix" data-tooltip="Click to leave comment">
+        <h1>LC Details</h1>
+        <div class="items">
+            <span>Proforma Invoice number</span>
+            <strong>123456789033</strong>
+        </div>
+        <div class="items">
+            <span>LC Type</span>
+            <strong>Irrevocable</strong>
+        </div>
+        <div class="items">
+            <span>Transaction Type</span>
+            <strong>Purchase of goods</strong>
+        </div>
+        <div class="items">
+            <span>Expiry Date</span>
+            <strong>15 Mar 2019</strong>
+        </div>
+        <div class="items">
+            <span>Limit ID</span>
+            <strong>89033</strong>
+        </div>
+        <div class="items">
+            <span>Place of Expiry</span>
+            <strong>Mumbai</strong>
+        </div>
+    </div>
+    <div class="btnArea">
+        <button class="button" onclick="activeToolTip()">Activate Tooltip</button>
+        <button class="button" onclick="showCursor()">Request Change</button>
+    </div>
+    
+
+    <div id="commentsBox">
+        <div class="commentList">
+            <div class="hd">All Comments</div>
+            <ul id="comments"></ul>
+        </div>
+        <img src="iconfinder_5_2958191.svg" width="60">
+    </div>
+
+    <script src="jquery.min.js"></script>
+
+<script>
+
+var showToolTIp = false;
+var clickedItem = false;
+var popupList = [];
+var storeData = {};
+function showCursor(){
+        if(showToolTIp){
+            console.log('STOP');
+            $('.tooltip').remove();
+            return false;
+        }
+        console.log('STOP Second');
+        $('#wrapper').hover(function () {
+            if(showToolTIp) return false;
+            var title = $(this).attr('data-tooltip');
+            $(this).data('tipText', title);
+            $('<p class="tooltip"></p>').fadeIn(200).text(title).appendTo('body');
+        }, function () {
+            $(this).attr('data-tooltip', $(this).data('tipText'));
+            $('.tooltip').remove();
+        }).mousemove(function (e) {
+            var mousex = e.pageX;
+            var mousey = e.pageY;
+            $('.tooltip').css({
+                top: mousey + 20,
+                left: mousex
+            })
+        });
+    addComments();
+}
+
+function activeToolTip(){
+    showToolTIp = false;
+    showCursor();
+}
+
+function addComments () {
+    var inputs = document.querySelectorAll(".items");
+    var getCountId = localStorage.getItem('StoreCount');
+    var count = getCountId ? Number(getCountId) + 1 : 1;
+    console.log(count);
+    inputs.forEach( function(ob) {
+        ob.addEventListener('click', function() {
+            console.log('Item Clicked');
+            if(clickedItem) return false;
+            var elemlen = ob.querySelectorAll('.num');
+            var objEle = document.createElement('div');
+            var objElePop = document.createElement('div');
+            objEle.setAttribute('class','num');
+            objEle.setAttribute('data-tab','tab-'+count);
+            objEle.innerHTML = count;
+            objElePop.setAttribute('class','arrow_box tab-content');
+            objElePop.setAttribute('id','tab-'+count);
+            var dataId = "storeData-"+count;
+            var textVal = "dataText-"+count;
+            objElePop.innerHTML = '<div class="content"><div class="contlist" id='+dataId+'></div><textarea id='+textVal+' placeholder="Add a new comment"></textarea><button class="del">Delete</button><button class="add">Add</button>';
+            var lnth = elemlen.length;
+            console.log('--------------- NUM Length --------------------', lnth);
+            var tableng = document.querySelectorAll('#wrapper .tab-content').length;
+            console.log('---------------TAB Content --------------------', tableng);
+            showToolTIp = true; 
+            showCursor();
+            if(lnth == 1){
+                return false;
+            }
+            else{
+                count++;
+                ob.appendChild(objEle);
+                ob.appendChild(objElePop);          
+            }
+            if(lnth == 0){
+                clickedItem = true;
+            }
+            if(tableng == 0){
+                $('#wrapper .tab-content').addClass('current');
+            }else{
+                $('#wrapper .tab-content').removeClass('current');
+            }
+            console.log(count);
+            $('.num').click(function(){
+                console.log('End');
+                event.stopPropagation();
+                var tab_id = $(this).attr('data-tab');
+                $('.tab-content').removeClass('current');
+                $("#"+tab_id).addClass('current');             
+            });
+            var btnadd = ob.querySelector('button.add');
+            var btndel = ob.querySelector('button.del');
+            var listdata = [];
+            var listcont = '';
+            storeData[dataId] = [];                
+            btnadd.addEventListener('click', function(){
+                event.stopPropagation();
+                console.log('This Button Clicked');
+                console.log('------------------------OBJECT-------------------------', storeData);
+                clickedItem = false;
+                var tx = document.getElementById(textVal).value;
+                if(tx=='') return false;
+                listdata.unshift('<span>'+tx+'</span>');
+                popupList.push('<li>'+tx+'</li>');
+                var obj = {
+                    text : tx
+                };
+                storeData[dataId].push(obj);
+                localStorage.setItem('DataStore', JSON.stringify(storeData));
+                localStorage.setItem('StoreCount', ob.querySelector('.num').innerHTML);
+                // localStorage.setItem('popupList', JSON.stringify(popupList));
+                document.getElementById(dataId).innerHTML = listdata.join('');
+                document.getElementById('comments').innerHTML = popupList.join('');
+                document.getElementById(textVal).value = '';
+                ob.querySelector('.tab-content').classList.remove('current');
+                if($('.contlist span').length == 1){
+                    $('#commentsBox').show();
+                }
+                console.log('----------------------------------Number HTML', ob.querySelector('.num').innerHTML);
+            });
+            btndel.addEventListener('click', function(e){
+                event.stopPropagation();
+                e.currentTarget.parentNode.parentNode.remove();
+                clickedItem = false;
+                // count--;
+                ob.querySelector('.num').remove();
+                delete storeData[dataId];
+                localStorage.setItem('DataStore', JSON.stringify(storeData));
+                if($('.contlist span').length < 1){ 
+                    $('#commentsBox').hide();
+                }
+            });
+            $('.commentList').removeClass('active');
+        });
+    });
+}
+
+$(function(){
+    $('.items, .num, #commentsBox img').click(function(e){
+        e.stopPropagation();
+    });
+
+    $(document).click(function() {
+        $('#wrapper .tab-content').removeClass('current');
+        $('.commentList').removeClass('active');
+    });
+
+    $('#commentsBox img').click(function(){
+        $('.commentList').toggleClass('active');
+    });
+});
+
+
+
+
+function addelement(){
+    data.push(document.getElementById('t1').value); // adding element to array
+    document.getElementById('t1').value=''; // Making the text box blank
+    disp(); // displaying the array elements
+}
+function remelement(index_no){
+    var t1=data.splice(index_no,1);
+    disp(); // displaying the array elements
+}
+function disp(){
+    var str='';
+    str = 'total number of elements in data array : ' + data.length + '<br>';
+    for (i=0;i<data.length;i++){ 
+        str += i + ':'+data[i] + " <a href=# onClick='remove_element("+data.indexOf(data[i])+")'> Remove</a> " + "<br >";
+    }
+    document.getElementById('disp').innerHTML=str; // Display the elements of the array
+}
+
+    
+
+    
+
+</script>
+
+</body>
+</html>
